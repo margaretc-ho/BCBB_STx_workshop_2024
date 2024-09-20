@@ -3,11 +3,12 @@
 Teaching Materials for Spatial Transcriptomics workshop for NIH researchers, prepared by Margaret Ho (BCBB Science Support)
 
 ## Day 1 -- Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)
--- Slides (.pptx)
+
+See slides (.pptx)
 
 ## Day 2 Hands-on workshop using R and Seurat to analyze an example spatial transcriptomics dataset (Nov 15 2024 1-3pm, online session)
 
---Quarto Markdown (.qmd) document containing R code for analyzing an example STx dataset with Seurat
+See Quarto Markdown (.qmd) document containing R code for analyzing an example STx dataset with Seurat
 
 ### HPC instructions for Students
 
