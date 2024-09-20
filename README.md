@@ -1,6 +1,5 @@
-# BCBB_STx_workshop_2024: 
-
-Teaching Materials for Spatial Transcriptomics workshop for NIH researchers, prepared by Margaret Ho (BCBB Science Support)
+# Teaching Materials for 2024 Spatial Transcriptomics workshop for NIH researchers
+Prepared by Margaret Ho (BCBB Science Support)
 
 ## Day 1 Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)
 
