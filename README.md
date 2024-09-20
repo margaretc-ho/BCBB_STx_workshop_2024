@@ -9,7 +9,7 @@ See slides (.pptx)
 
 See Quarto Markdown (.qmd) document containing R code for analyzing an example STx dataset with Seurat
 
-### HPC instructions for Students
+## HPC instructions for Students
 
 ### Running RStudio Server on Biowulf HPC
 Please see the official instructions at https://hpc.nih.gov/apps/rstudio-server.html for setting up your interactive session, creating a tunnel, and accessing R Studio Server using local host, assigned port and web browser
