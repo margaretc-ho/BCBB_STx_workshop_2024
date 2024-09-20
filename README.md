@@ -2,7 +2,7 @@
 
 Teaching Materials for Spatial Transcriptomics workshop for NIH researchers, prepared by Margaret Ho (BCBB Science Support)
 
-## Day 1 -- Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)
+## Day 1 Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)
 
 See slides (.pptx)
 
