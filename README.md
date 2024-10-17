@@ -8,9 +8,10 @@ Prepared by Margaret Ho (BCBB Science Support)
 
 [Part 2 - Slides (draft) ](https://github.com/user-attachments/files/17415203/STworkshop_part2_.2024draft_101524.pdf)  
 
+See Quarto Markdown (Seurat_Visium_Tutorial.qmd) document containing R code for analyzing an example STx dataset with Seurat
 [Part 2 - R Code (Quarto Markdown Document - draft)](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.qmd)  
+Knitted document (Seurat_Visium_tutorial.html) also available [here](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.html)
 
-See Quarto Markdown (.qmd) document containing R code for analyzing an example STx dataset with Seurat
 
 ## HPC instructions for Students
 
