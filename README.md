@@ -2,10 +2,11 @@
 Prepared by Margaret Ho (BCBB Science Support)
 
 ## Day 1 Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)
-
-See slides (.pptx)
+[Part 1 - Slides (draft) ](https://github.com/user-attachments/files/17415223/STworkshop_2024draft_101024.pdf)
 
 ## Day 2 Hands-on workshop using R and Seurat to analyze an example spatial transcriptomics dataset (Nov 15 2024 1-3pm, online session)
+
+[Part 2 - Slides (draft) ](https://github.com/user-attachments/files/17415203/STworkshop_part2_.2024draft_101524.pdf)
 
 See Quarto Markdown (.qmd) document containing R code for analyzing an example STx dataset with Seurat
 
