@@ -17,7 +17,7 @@ Knitted document (Seurat_Visium_tutorial.html) also available [here](https://git
 
 ### Running RStudio Server on Biowulf HPC
 Please see the official instructions at https://hpc.nih.gov/apps/rstudio-server.html for setting up your interactive session, creating a tunnel, and accessing R Studio Server using local host, assigned port and web browser
-I also created an instructions PDF [RStudioServer_on_Biowulf_instructions_082324MH.pdf](https://github.com/user-attachments/files/17080127/RStudioServer_on_Biowulf_instructions_082324MH.pdf)
+I also created an (instructions PDF)[https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/0d46ea2aacb6bc4e0d1a4d07d1de317a8d631d24/RStudioServer_on_Biowulf_instructions_082324MH.pdf]
 which adds a bit more detail. I recommend that you request at least 25G of memory for your interactive session for Visium datasets and more (~40GB) for larger datasets such as Visium HD and Xenium.
 
 ### Running RStudio Server on NIAID Skyline
