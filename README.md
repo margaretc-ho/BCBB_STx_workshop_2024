@@ -22,4 +22,4 @@ I also created an detailed instructions [PDF](https://github.com/margaretc-ho/BC
 I recommend that you request at least 25G of memory for your interactive session for Visium datasets and more (~40GB) for larger datasets such as Visium HD and Xenium.
 
 ### Running RStudio Server on NIAID Skyline
-For running RStudio Server, please see Poorani Subramanian's excellent instructions here https://github.com/niaid/hpcR/tree/main/rstudio_server
+For running RStudio Server on Skyline, please see Poorani Subramanian's excellent instructions [here](https://github.com/niaid/hpcR/tree/main/rstudio_server)  
