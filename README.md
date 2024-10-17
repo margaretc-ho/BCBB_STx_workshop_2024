@@ -9,7 +9,7 @@ Prepared by Margaret Ho (NIAID BCBB Science Support)
 
 See Quarto Markdown (Seurat_Visium_Tutorial.qmd) document containing R code for analyzing an example STx dataset with Seurat  
 [Part 2 - R Code (Quarto Markdown Document - draft)](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.qmd)    
-Ideally, please run the SETUP section in <span style="color:red">red</span> if possible to install necessary R packages and libraries before our session starts to make things easier. But no worries if you didn't get to it ahead of time.   
+Ideally, please run the SETUP section in $${\color{red}red}$$ to install necessary R packages and libraries before our session starts to make things easier. But no worries if you didn't get to it ahead of time.   
 
 Knitted document (Seurat_Visium_tutorial.html) also available [here](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.html)   
 
