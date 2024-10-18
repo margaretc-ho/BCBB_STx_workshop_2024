@@ -5,13 +5,14 @@ Prepared by Margaret Ho (NIAID BCBB Science Support)
 [Part 1 - Slides (draft) ](https://github.com/user-attachments/files/17415223/STworkshop_2024draft_101024.pdf)  
  
 ## Day 2: Hands-on workshop using R and Seurat to analyze an example spatial transcriptomics dataset (Nov 15 2024 1-3pm, online session)  
-[Part 2 - Slides (draft](https://github.com/user-attachments/files/17424848/STworkshop_part2_.2024draft_101524.pdf)
+[Part 2 - Slides (draft) ](https://github.com/user-attachments/files/17424848/STworkshop_part2_.2024draft_101524.pdf)
 
 See Quarto Markdown (Seurat_Visium_Tutorial.qmd) document containing R code for analyzing an example STx dataset with Seurat  
 [Part 2 - R Code (Quarto Markdown Document - draft)](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.qmd)    
 Ideally, please run the SETUP section in $${\color{red}red}$$ to install necessary R packages and libraries and download Visium data and scRNA-seq reference dataset before our session starts to make things easier. But no worries if you didn't get to it ahead of time.   
 
-Knitted document (Seurat_Visium_tutorial.html) also available [here](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/babcca31b9506e6cc79dfed7bddb581033074f0e/Seurat_Visium_tutorial.html)   
+PDF (showing the code and output) also available [here](https://github.com/user-attachments/files/17425039/Seurat_spatialvignette.pdf)
+
 
 ## HPC instructions for Workshop Participants 
 
