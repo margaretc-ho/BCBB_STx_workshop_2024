@@ -1,6 +1,10 @@
 ---
 title: "Seurat_spatialvignette"
-format: html
+format:
+  html:
+    code-overflow: wrap
+#    code-fold: true
+#    code-summary: "Show code"
 editor: visual
 warning: false
 ---
@@ -104,7 +108,7 @@ Every Seurat object consists as a collection of Assay objects and DimReduc objec
 Each Seurat object has slots:
 
 | Slot           | Function                                                                        |
-|--------------------------|----------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `assays`       | A list of assays within this object                                             |
 | `meta.data`    | Cell-level meta data                                                            |
 | `active.assay` | Name of active, or default, assay                                               |
@@ -179,7 +183,8 @@ Metadata is stored as a `data.frame`, where each row is a sample (e.g. cell or 
 Accessed via `[[` extract operator, the `meta.data` object, or the `$` sigil (`$` extracts one single column at a time). Row names in the metadata need to match the column names of the counts matrix.
 
 ```{r}
-head(brain@meta.data)
+#head(brain@meta.data)
+#rownames(brain@meta.data)
 ```
 
 Here we can look at the distribution of transcripts detected per spot and spatially across the sample image:
@@ -188,15 +193,21 @@ Here we can look at the distribution of transcripts detected per spot and spatia
 brainCount_Spatial_VlnPlot <- VlnPlot(brain, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
 brain_SpatialFeaturePlot <- SpatialFeaturePlot(brain, features = "nCount_Spatial", images="anterior1") + theme(legend.position = "right")
 wrap_plots(brainCount_Spatial_VlnPlot, brain_SpatialFeaturePlot)
+### ggsave("brain_SpatialFeaturePlot.png", brain_SpatialFeaturePlot, dpi=800)
+### to save the plot
 ```
 
-------------------------------------------------------------------------
+### Mouse Brain Anatomy
+
+![](images/clipboard-1678933114.png)
+
+(source: <https://www.biorender.com/template/mouse-brain-anatomy-sagittal-view>)
 
 ### Exploring what we mean by Overdispersion of Count Data
 
 ```{r}
+# Save the raw count data
 nCount_Spatial <- brain@meta.data$nCount_Spatial
-
 # Create a data frame for plotting
 nCount_Spatialdf <- data.frame(nCount_Spatial = nCount_Spatial)
 
@@ -229,24 +240,7 @@ ggplot() +
 
 The Poisson distribution (equivalent to normal distribution at high n) is really not appropriate for modeling count data! The observed count data has much higher variance.
 
-```{r}
-ggplot() +
-  geom_histogram(data = nCount_df, aes(x = nCount_SpatialPoisson, fill = "nCount_SpatialPoisson"), binwidth = 10, alpha = 0.5, position = 'identity') +
-  scale_fill_manual(name = "Legend", values = c("nCount_SpatialPoisson" = "red")) + labs(title = "Histogram of nCount_SpatialPoisson", x = "Value", y = "Count") + theme_minimal()
-```
-
-```{r}
-ggplot() +
-  geom_histogram(data = nCount_df, aes(x = nCount_Spatial, fill = "nCount_Spatial"), 
-                 binwidth = 200, alpha = 0.5, position = 'identity') +
-  scale_fill_manual(name = "Legend", values = c("nCount_Spatial" = "blue")) +
-  labs(title = "Histogram of nCount_Spatial",
-       x = "Value",
-       y = "Count") +
-  theme_minimal()
-```
-
-#### Compare to Negative Binomial Distribution with same mean and dispersion
+### Compare to Negative Binomial Distribution with same mean and dispersion
 
 ```{r}
 mu_count <- mean(nCount_Spatialdf$nCount_Spatial)
@@ -259,13 +253,13 @@ if (variance_count > mu_count) {
 } else {
   stop("Variance must be greater than the mean to estimate size.")
 }
-
-nCount_Spatial_rNB<-rnbinom(n = length(nCount_Spatialdf$nCount_Spatial), size=size_count, mu=mu_count)
-
-nCount_df <- data.frame(nCount_Spatial1 = nCount_Spatial, nCount_SpatialPoisson = nCount_Spatial_rPoisson, nCountSpatialNB=nCount_Spatial_rNB)
 ```
 
 ```{r}
+nCount_Spatial_rNB<-rnbinom(n = length(nCount_Spatialdf$nCount_Spatial), size=size_count, mu=mu_count)
+
+nCount_df <- data.frame(nCount_Spatial1 = nCount_Spatial, nCount_SpatialPoisson = nCount_Spatial_rPoisson, nCountSpatialNB=nCount_Spatial_rNB)
+
 ggplot() +
   geom_histogram(data = nCount_df, aes(x = nCount_Spatial, fill = "nCount_Spatial"), binwidth = 1000, alpha = 0.5, position = 'identity') +
   geom_histogram(data = nCount_df, aes(x = nCountSpatialNB, fill = "nCountSpatialNB"), binwidth = 1000, alpha = 0.5, position = 'identity') +
@@ -280,7 +274,7 @@ sd(nCount_df$nCount_Spatial1)
 sd(nCount_df$nCountSpatialNB)
 ```
 
-The fitted NB only slightly underestimates the variance (sd=var\^2) in the count data! Our count data has a lot of variance, which is why we will perform a normalization with SCTransform to try to remove some of the excess variance.
+The fitted NB only slightly underestimates the variance (sd=var\^2) in the count data! Our count data has a lot of variance, which is why we will perform a normalization with SCTransform (regularized negative binomial regression method) to try to remove some of the excess variance.
 
 ------------------------------------------------------------------------
 
@@ -289,18 +283,18 @@ The fitted NB only slightly underestimates the variance (sd=var\^2) in the count
 ```{r}
 brain[["percent.mt"]] <-PercentageFeatureSet(object = brain, pattern = "^MT-|^mt-")
 summary(brain[["percent.mt"]])
-plot_mt <- VlnPlot(brain, features = "percent.mt", pt.size = 0.1) + NoLegend()
-plot_mt
+VlnPlot(brain, features = "percent.mt", pt.size = 0.1) + NoLegend()
 ```
 
 On a histogram, we can see this more clearly:
 
 ```{r}
+### as straight histogram
+#brain@meta.data %>% ggplot(mapping=aes(x=percent.mt)) + 
+#  geom_histogram(bins=50) + 
+#  theme_minimal()
 
-brain@meta.data %>% ggplot(mapping=aes(x=percent.mt)) + 
-  geom_histogram(bins=50) + 
-  theme_minimal()
-
+### histogram with density plot
 brain@meta.data %>% ggplot(mapping=aes(x=percent.mt)) + 
   geom_histogram(bins=50, aes(y = after_stat(density)), colour = "black",fill = "grey") + 
   geom_density(alpha = 0.5, adjust = 1.0, fill = "#A0CBE8", colour = "#4E79A7") + 
@@ -310,20 +304,24 @@ brain@meta.data %>% ggplot(mapping=aes(x=percent.mt)) +
 Here's our Count Data after filtering out Mitochondrial Genes using Seurat's **subset()** function
 
 ```{r remove_pctmito_gt25}
-?subset
+?subset.Seurat
 brain_mtfilt<-subset(x = brain, subset = percent.mt < 28)
-#plot1 <- VlnPlot(brain, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
-#plot2 <- SpatialFeaturePlot(brain, features = "nCount_Spatial") + theme(legend.position = "right")
-#wrap_plots(plot1, plot2)
+#VlnPlot(brain_mtfilt, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+#SpatialFeaturePlot(brain_mtfilt, features = "nCount_Spatial") + theme(legend.position = "right")
+
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Normalize Count Data with scTransform
 
-Here, we are plotting the library size (molecular counts) across the data and the tissue. We can see there are tissue regions where counts are reduced, coinciding with areas of cortical white matter where neurons are scarce. Where one might normally use LogNormalize() function in Seurat to force each data point to have a standard/median size after normalization, this can introduce problems.
+Here, we are plotting the library size (molecular counts) across the data and the tissue. We can see there are tissue regions where counts are reduced, coinciding with areas of white matter where neurons are scarce. Where one might normally use LogNormalize() function in Seurat to force each data point to have a standard/median size after normalization, this can introduce problems.
 
-Instead, we will use **scTransform**, which uses regularized negative binomial model for gene expression to account for technical variation while preserving biological variation. ScTransform functions by normalizing data and detecting high variance features and stores this data in the SCT assay.
+```{r}
+SpatialFeaturePlot(brain_mtfilt, features = "nCount_Spatial") + theme(legend.position = "right")
+```
+
+We will use **scTransform**, which uses regularized NB model for gene expression to account for technical variation while preserving biological variation. ScTransform functions by normalizing data and detecting high variance features and stores this data in the SCT assay of the Seurat object.
 
 We can use it with this data, specifying "Spatial" as the assay to perform the transformation on:
 
@@ -333,18 +331,26 @@ We can use it with this data, specifying "Spatial" as the assay to perform the t
 ### substantially improves speed for the SCTransform algorithm
 library(glmGamPoi)
 brain_mtfilt <- SCTransform(brain_mtfilt, assay = "Spatial", verbose = TRUE)
-brain <- SCTransform(brain, assay = "Spatial", vars.to.regress = "percent.mt", verbose = TRUE)
+### alternatively, know that you can also tell SCTransform to regress out certain features like percent.mt instead of using filtering them out using subset 
+###brain <- SCTransform(brain, assay = "Spatial", vars.to.regress = "percent.mt", verbose = TRUE)
 ```
 
+Now we can see the Active Assay should be SCT:
+
 ```{r}
+#brain_mtfilt@assays$SCT$counts
 brain_mtfilt
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Spatial Feature Plot can be used to show the spatial expression pattern of a given feature/gene
 
 The [`SpatialFeaturePlot`](https://satijalab.org/seurat/reference/spatialplot) function in Seurat extends `FeaturePlot`, and can overlay molecular data on top of tissue histology.
+
+Hpca = hippocalcin (neuron-specific Ca2+ binding protein)
+
+Ttr = transthyretin (retinol transporter)
 
 ```{r}
 SpatialFeaturePlot(brain_mtfilt, features = c("Hpca", "Ttr"))
@@ -364,12 +370,17 @@ p2 <- SpatialFeaturePlot(brain_mtfilt, features = "Ttr", alpha = c(0.1, 1))
 p1 + p2
 ```
 
+ImageFeaturePlot shows another view of gene expression on a spatial map:
+
+Gfap = astroglial marker (strong in pial layer and hippocampus and esp white matter astrocytes)
+
 ```{r}
 ImageFeaturePlot(brain_mtfilt, features="Ttr", size=2)
+ImageFeaturePlot(brain_mtfilt, features="Gfap", size=2)
 
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Dimension Reduction with PCA, Clustering and Visualize Clusters with UMAP
 
@@ -383,7 +394,11 @@ brain_mtfilt <- RunUMAP(brain_mtfilt, reduction = "pca", dims = 1:30)
 Reductions(brain_mtfilt)
 ```
 
-The PCA analysis resulted in 5 principal components and 14 clusters
+The PCA analysis resulted in 50 principal components and 14 clusters
+
+```{r}
+brain_mtfilt@reductions$pca
+```
 
 ```{r}
 summary(brain_mtfilt$seurat_clusters)
@@ -405,7 +420,7 @@ p2 <- SpatialDimPlot(brain_mtfilt, label = TRUE, label.size = 3, pt.size.factor 
 p1 + p2
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Save Point 1
 
@@ -416,7 +431,7 @@ saveRDS(brain_mtfilt, file = "brain_mtfilt_sctransform.rds")
 #brain_mtfilt <- readRDS("brain_mtfilt_sctransform.rds")
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Use SpatialDimPlot and ImageDimPlot to examine clusters
 
@@ -432,6 +447,8 @@ panel.grid.minor = element_line(color = "grey90", linewidth = 0.25)) # Minor gri
 
 ```{r}
 ImageDimPlot (brain_mtfilt, size=2)
+
+### note some issues with axes in ImageDimPlot https://github.com/satijalab/seurat/issues/6132
 ```
 
 SpatialDimPlot and SpatialFeaturePlot both have an interactive option
@@ -457,17 +474,19 @@ SpatialDimPlot(brain_mtfilt, cells.highlight = CellsByIdentities(object = brain_
 Here are the SCTransformed Counts (UMI) for each Cluster on a Violin Plot
 
 ```{r}
-plot1 <- VlnPlot(brain_mtfilt, features = "nCount_SCT", pt.size = 0.1) + NoLegend()
-plot1
+VlnPlot(brain_mtfilt, features = "nCount_SCT", pt.size = 0.1) + NoLegend()
+#RidgePlot(brain_mtfilt, features = "nCount_SCT") ### or a ridge plot
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ## Find DE Marker Genes for Clusters
 
 We can identify differentially expressed genes between two groups of cells using a Wilcoxon Rank Sum test with the *FindMarkers* function. Because the clusters that were found have good spatial restriction, this is one way of finding genes marking spatially distinct regions.
 
-Here we look at DE genes between cluster 2 and cluster 5
+Here we look at DE genes between cluster 2 and cluster 5.
+
+(Note if you set ident.2 = NULL you will get DE genes between cluster 2 and all other cells)
 
 ```{r}
 #devtools::install_github('immunogenomics/presto')
@@ -477,16 +496,36 @@ de_markers_2_5 <- FindMarkers(brain_mtfilt, ident.1 = 2, ident.2 = 5)
 SpatialFeaturePlot(object = brain_mtfilt, features = rownames(de_markers_2_5)[1:3], alpha = c(0.1, 1), ncol = 3, pt.size.factor = 2.5)
 ```
 
+According to Seurat documentation, FindMarkers has the following output:
+
+-   p_val : p-value (unadjusted)
+
+-   avg_log2FC : log fold-change of the average expression between the two groups. Positive values indicate that the feature is more highly expressed in the first group.
+
+-   pct.1 : The percentage of cells where the feature is detected in the first group
+
+-   pct.2 : The percentage of cells where the feature is detected in the second group
+
+-   p_val_adj : Adjusted p-value, based on Bonferroni correction using all features in the dataset.
+
+```{r}
+head(de_markers_2_5)
+```
+
+We can plot the spatial expression patterns of the top 6 DE genes between cluster 2 and cluster 5:
+
 ```{r}
 de_markers_2_5_p0.01 <- de_markers_2_5 %>% filter(p_val < 0.01)
 SpatialFeaturePlot(object = brain_mtfilt, features = rownames(de_markers_2_5_p0.01)[1:6], alpha = c(0.1, 1), ncol = 3, pt.size.factor = 2.5)
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Spatially Variable Genes/Features using Moran's I
 
-A more direct way to find spatially variable genes is using `FindSpatiallyVariableFeatures()` . It identifies features exhibiting spatial patterning in the absence of pre-annotation. The default method (method=`markvariogram`) is inspired by the Trendsceek package, which takes STx data as a mark point process and computes a variogram to ID genes based on expression in spatial location. But we can also specify it to use Moran's I:
+A more direct way to find spatially variable genes is using `FindSpatiallyVariableFeatures()` . It identifies genes/features exhibiting spatial patterning in the absence of pre-annotation. The default method (method=`markvariogram`) is inspired by the Trendsceek package, which takes STx data as a mark point process and computes a variogram to ID genes based on expression in spatial location. But we can also specify it to use Moran's I.
+
+We will run **FindSpatiallyVariableFeatures** with the most 1000 variable features and Moran's I method
 
 ```{r}
 #install.packages("Rfast2")
@@ -495,10 +534,8 @@ brain_mtfilt <- FindSpatiallyVariableFeatures(brain_mtfilt, assay = "SCT", featu
 ```
 
 ```{r}
-#rownames(brain_mtfilt$SCT)
 #brain_mtfilt$SCT
-#names(brain_mtfilt)
-#head(brain_mtfilt$SCT@meta.features)
+#brain_mtfilt$SCT@meta.features
 ```
 
 ```{r}
@@ -507,25 +544,27 @@ moransi_output_df <- brain_mtfilt@assays$SCT@meta.features %>%
 head(moransi_output_df[order(moransi_output_df$MoransI_observed, decreasing = T), ])
 ```
 
-See for reference (https://github.com/satijalab/seurat/issues/7729)
+Again, we can use SpatialFeaturePlot to look at the expression of the top 6 most spatially variable genes:
 
 ```{r}
 top.clusters <- rownames(brain_mtfilt$SCT@meta.features)[which(brain_mtfilt$SCT@meta.features$moransi.spatially.variable.rank < 6)]
 SpatialFeaturePlot(brain_mtfilt, features = top.clusters, ncol = 3, alpha = c(0.1, 1), pt.size.factor = 2.5)
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
-## Subset cortex anatomical region
+## Analysis of Mouse Cortex using scRNA-seq reference
 
-Here we can do so by selecting specific clusters that correspond to this anatomical region
+With the Allen Brain Atlas, we have reference scRNA-seq data for many brain regions with detailed annotations of cell type based on gene expression. We will make use of their mouse cortex reference (download [here](https://www.dropbox.com/scl/fi/r1mixf4eof2cot891n215/allen_scRNAseq_ref.Rds?rlkey=ynr6s6wu1efqsjsu3h40vitt7&dl=0), skip if done ahead of time). This cortex reference scRNAseq dataset has been reduced to 200,000 cells (and rare cell types fewer than 25 cells have been removed).
+
+We can select the anatomic regions of the mouse cortex of our Seurat `brain_mtfilt` object by selecting specific clusters that correspond to this anatomical region using Seurat's subset function again.
 
 ```{r subset_cortex}
 cortex <- subset(brain_mtfilt, idents = c(1, 2, 3, 4, 6))
 SpatialDimPlot(cortex, crop = TRUE, label = TRUE)
 ```
 
-After subsetting we should renormalize cortex spatial data
+After subsetting, we should renormalize the cortex spatial data and rerun PCA, clustering and UMAP:
 
 ```{r}
 cortex <- SCTransform(cortex, assay = "Spatial", verbose = FALSE) %>%
@@ -536,13 +575,15 @@ cortex <- SCTransform(cortex, assay = "Spatial", verbose = FALSE) %>%
 Reductions(cortex)
 ```
 
+This yields clusters that are even more defined:
+
 ```{r}
 p1 <- DimPlot(cortex, reduction = "umap", label = TRUE)
 p2 <- SpatialDimPlot(cortex, label = TRUE, label.size = 3, pt.size.factor = 2.5)
 p1 + p2
 ```
 
------------------------------------------------------------
+------------------------------------------------------------------------
 
 ### Annotation using with a scRNA-seq reference
 
@@ -558,24 +599,23 @@ First, install RCTD and load it using **library(spacexr)** (skip if done ahead o
 ### Note: I had issues installing until I took myself off NIH VPN. Might want to do the same if you encounter the same issue
 
 #remotes::install_github("dmcable/RCTD")
-library(spacexr)
 ```
-
-Download mouse cortex reference [here](https://www.dropbox.com/scl/fi/r1mixf4eof2cot891n215/allen_scRNAseq_ref.Rds?rlkey=ynr6s6wu1efqsjsu3h40vitt7&dl=0). (skip if done ahead of time) This reference scRNAseq dataset has been reduced to 200,000 cells (and rare cell types fewer than 25 cells have been removed).
 
 Load the mouse cortex reference as `ref` object:
 
 ```{r}
+library(spacexr)
 #setwd("/Users/homc/Library/CloudStorage/OneDrive-NationalInstitutesofHealth/MHO_WORK/MyWorkshops/SpatialTranscriptomics/Seurat_tutorial/")
 ref <- readRDS("allen_cortex.rds")
 ref <- UpdateSeuratObject(ref)
+#ref@assays$RNA
 ```
 
 ```{r}
-ref_counts <- ref[["RNA"]]$counts
-ref_cluster <- as.factor(ref$subclass)
-ref_nUMI <- ref$nCount_RNA
-levels(ref_cluster) <- gsub("/", "-", levels(ref_cluster))
+ref_counts <- ref[["RNA"]]$counts ### sparse matrix of count data 
+ref_cluster <- as.factor(ref$subclass) ## annotate cell_types
+ref_nUMI <- ref$nCount_RNA ### list of total counts or UMIs
+levels(ref_cluster) <- gsub("/", "-", levels(ref_cluster)) ## format cell_type names
 ```
 
 Sketch the cortical subset of the Visium dataset, which downsamples the high-dimensional spatial RNA expression data, which can help with scalability for large datasets, to 10,000 cells
@@ -594,7 +634,7 @@ cortex <- SketchData(
 ```
 
 ```{r}
-DefaultAssay(cortex) <- "sketch"
+DefaultAssay(cortex) <- "sketch" ### set the default assay now to "sketch"
 cortex <- FindVariableFeatures(cortex, assay="sketch")
 cortex <- ScaleData(cortex, assay="sketch")
 cortex <- RunPCA(cortex, assay = "sketch", reduction.name = "pca.cortex.sketch", verbose = T)
@@ -605,33 +645,44 @@ cortex <- RunUMAP(cortex, reduction = "pca.cortex.sketch", reduction.name = "uma
 Create RCTD reference object
 
 ```{r}
-### make reference object from the ref scRNA-seq object
+### make reference object from the ref scRNA-seq counts, annotated cell types, and nUMI calculated above
 reference <- Reference(ref_counts, ref_cluster, ref_nUMI) 
 ```
 
 Create the RCTD query object
 
 ```{r}
-### make query SpatialRNA object from the cortex Visium data
-query_counts_hd <- cortex[["sketch"]]$counts
-query_cells_hd <- colnames(cortex[["sketch"]])
-query_coords <- GetTissueCoordinates(cortex)[query_cells_hd, 1:2]
-query <- SpatialRNA(query_coords, query_counts_hd, colSums(query_counts_hd))
+### calculate the query counts and spot barcodes, use to get spot coordinates
+query_counts_hd <- cortex[["sketch"]]$counts ### sparse matrix of counts
+query_cells_hd <- colnames(cortex[["sketch"]]) ### spots names/barcodes
+query_coords <- GetTissueCoordinates(cortex)[query_cells_hd, 1:2] ### coordinates of the spots
+
+### make query SpatialRNA object from the cortex Visium data from coords, counts, and nUMI calculated above
+query <- SpatialRNA(query_coords, query_counts_hd, colSums(query_counts_hd)) 
 ```
 
 ```{r}
-# run RCTD on query and reference
+# run RCTD on query and reference objects
 RCTD <- create.RCTD(query, reference, max_cores = 28, CELL_MIN_INSTANCE=5)
 RCTD <- run.RCTD(RCTD, doublet_mode = "doublet")
-# add results back to cortex Seurat object
+# add results back to cortex object metadata
 cortex <- AddMetaData(cortex, metadata = RCTD@results$results_df)
+```
+
+```{r}
+glimpse(cortex)
+#summary(cortex@meta.data$first_type)
 ```
 
 Project RCTD labels from sketched cortical cells to all cortical cells
 
 ```{r}
-cortex$first_type <- as.character(cortex$first_type)
+
+### change first_type NAs to Unknown
+cortex$first_type <- as.character(cortex$first_type) ### label a new column 
 cortex$first_type[is.na(cortex$first_type)] <- "Unknown"
+
+### project RCTD labels from sketched cells to all cortical cells
 cortex <- ProjectData(
   object = cortex,
   assay = "Spatial",
@@ -640,21 +691,19 @@ cortex <- ProjectData(
   sketched.reduction = "pca.cortex.sketch",
   umap.model = "umap.cortex.sketch",
   dims = 1:50,
-  refdata = list(full_first_type = "first_type")
+  refdata = list(full_first_type = "first_type") 
+  ### assigns the first_type from sketch to full_first_type in the full dataset
 )
 ```
 
 ```{r}
-#plot_all_cell_types(RCTD@results$results_df, coords, as.vector(cortex$first_type), resultsdir="/Users/homc/Library/CloudStorage/OneDrive-NationalInstitutesofHealth/MHO_WORK/MyWorkshops/SpatialTranscriptomics/Seurat_Visium_tutorial/out")
-```
-
-```{r}
+## make the default assay for brain_mtfilt as Spatial
 DefaultAssay(brain_mtfilt) <- "Spatial"
 # we only ran RCTD on the cortical cells
 # set labels to all other cells as "Unknown"
-brain_mtfilt[[]][, "full_first_type"] <- "Unknown"
+brain_mtfilt[[]][, "full_first_type"] <- "Unknown" ## assign any NAs/empty labels as Unknown
 brain_mtfilt$full_first_type[Cells(cortex)] <- cortex$full_first_type[Cells(cortex)]
-Idents(brain_mtfilt) <- "full_first_type"
+Idents(brain_mtfilt) <- "full_first_type" 
 ```
 
 ### Save Point 2
@@ -667,23 +716,25 @@ saveRDS(brain_mtfilt, file = "brain_mtfilt_sctransform_cortexannot.rds")
 #### Visualize excitatory interneuron layers
 
 ```{r}
-# now we can spatially map the location of any scRNA-seq cell type
-# start with Layered (starts with L), excitatory neurons in the cortex
+###  We can isolate the excitatory layer interneurons in the cortex because they have cell type names starting with L
 cells <- CellsByIdentities(brain_mtfilt)
 excitatory_names <- sort(grep("^L.*", names(cells), value = TRUE))
+### Then we can plot the spatial locations of these excitatory interneuron types
 SpatialDimPlot(brain_mtfilt, cells.highlight = cells[excitatory_names], cols.highlight = c("#FFFF00", "grey50"), facet.highlight = T, combine = T, ncol = 4)
 ```
 
 ```{r}
-### Here we can visualize all the cells
-#all_names<- names(cells)
-#SpatialDimPlot(brain_mtfilt, cells.highlight = cells[all_names], cols.highlight = c("#FFFF00", "grey50"), facet.highlight = T, combine = F, ncol = 1)
+### Here are all the labeled cells
+#all_cell_names<- names(cells)
+#SpatialDimPlot(brain_mtfilt, cells.highlight = cells[all_cell_names], cols.highlight = c("#FFFF00", "grey50"), facet.highlight = T, combine = F, ncol = 1)
 ```
 
 ```{r}
 library(viridis)
 brain_mtfilt_types <- as.data.frame(table(brain_mtfilt$full_first_type))
-ggplot(brain_mtfilt_types, aes(x = Var1, y = Freq, fill=Var1)) +
+colnames(brain_mtfilt_types) <- c("Cell_Type", "Freq")
+
+ggplot(brain_mtfilt_types, aes(x = Cell_Type, y = Freq, fill=Cell_Type)) +
   geom_bar(stat = "identity") +
   theme_minimal() +
   labs(title = "Assigned Cell Type after RTCD", x = "Assigned Cell Type after RTCD", y = "Count") +
@@ -693,7 +744,6 @@ ggplot(brain_mtfilt_types, aes(x = Var1, y = Freq, fill=Var1)) +
 **ImageDimPlot** will allow us to see the annotated cell identities on a spatial map:
 
 ```{r}
-DefaultAssay(brain_mtfilt) <- "Spatial"
 ImageDimPlot(brain_mtfilt, size=2, dark.background=FALSE, cols="polychrome") +   theme_minimal() + theme(panel.grid.major = element_line(color = "grey80", linewidth = 0.5), # Major grid lines
 panel.grid.minor = element_line(color = "grey90", linewidth = 0.25)) + # Minor grid lines + 
 scale_x_continuous(name = "X Coordinate") + # X-axis label
@@ -701,4 +751,6 @@ scale_y_continuous(name = "Y Coordinate") # Y-axis label
 ```
 
 ```{r}
+
+
 ```
