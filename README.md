@@ -18,7 +18,7 @@ Ideally, please run the SETUP section in $${\color{red}red}$$ to install necessa
 PDF (showing the code and output) also available [here](https://github.com/user-attachments/files/17425039/Seurat_spatialvignette.pdf)
 
 
-### Additional Code to demonstrate Xenium (image based) STx data analysis
+### Additional Code to demonstrate Xenium (image based) STx data analysis (optional)
 See Quarto Markdown document and HTML output in this zip file [Seurat_Xenium_tutorial_Biowulf_2024.zip](https://github.com/user-attachments/files/17548625/Seurat_Xenium_tutorial_Biowulf_2024.zip)
 
 ## HPC instructions for Workshop Participants 
