@@ -2,7 +2,7 @@
 Prepared by Margaret Ho (NIAID BCBB Science Support)  
 
 ## Day 1: Introduction to spatial transcriptomics methods and concepts for STx data analysis (Nov 4 2024 1-3 pm, online session)  
-[Part 1 - Slides ](https://github.com/user-attachments/files/17603900/STworkshop_2024_Part1_v4.pdf)
+[Part 1 - Slides ](https://github.com/user-attachments/files/17612054/STworkshop_2024_Part1_v4.pdf)
 
 ## Day 2: Hands-on workshop using R and Seurat to analyze an example spatial transcriptomics dataset (Nov 15 2024 1-3pm, online session)  
 
