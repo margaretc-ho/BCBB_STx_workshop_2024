@@ -9,10 +9,9 @@ Prepared by Margaret Ho (NIAID BCBB Science Support)
 ### Slides For Day 2
 [Part 2 - Slides](https://github.com/user-attachments/files/17778721/STworkshop_.2024_Part2_v3.pdf)
 
-
 ### Code For Day 2 to demonstrate Visium (sequencing based) STx data analysis
 See Quarto Markdown (Seurat_Visium_Tutorial.qmd) document containing R code for analyzing an example Visium (sequencing-based) STx dataset with Seurat  
-[Part 2 - R Code (Quarto Markdown Document - draft)](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/fa6ba621c9ee5b98c162f61c45d6487519d9072e/Seurat_Visium_tutorial.qmd)    
+[Part 2 - R Code (Quarto Markdown Document)](https://github.com/margaretc-ho/BCBB_STx_workshop_2024/blob/fa6ba621c9ee5b98c162f61c45d6487519d9072e/Seurat_Visium_tutorial.qmd)    
 Ideally, please run the SETUP section in $${\color{red}red}$$ to install necessary R packages and libraries and download Visium data and scRNA-seq reference dataset before our session starts to make things easier. But no worries if you didn't get to it ahead of time.   
 
 PDF (showing the code and output) also available [here](https://github.com/user-attachments/files/17425039/Seurat_spatialvignette.pdf)
