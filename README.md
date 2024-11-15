@@ -7,7 +7,7 @@ Prepared by Margaret Ho (NIAID BCBB Science Support)
 ## Day 2: Hands-on workshop using R and Seurat to analyze an example spatial transcriptomics dataset (Nov 15 2024 1-3pm, online session)  
 
 ### Slides For Day 2
-[Part 2 - Slides (draft) ](https://github.com/user-attachments/files/17424848/STworkshop_part2_.2024draft_101524.pdf)
+[Part 2 - Slides](https://github.com/user-attachments/files/17778721/STworkshop_.2024_Part2_v3.pdf)
 
 
 ### Code For Day 2 to demonstrate Visium (sequencing based) STx data analysis
