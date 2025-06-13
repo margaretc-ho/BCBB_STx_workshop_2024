@@ -1,10 +1,7 @@
 # Spatial Transcriptomics Workshop - Teaching Materials
 
-## Teaching Materials for 2025 Spatial Transcriptomics Presentation to NIDDK TriLab Bioinformatics Seminar
-Prepared by Margaret Ho (NIAID BCBB Science Support)  
-
-## Introduction to spatial transcriptomics methods and concepts for STx data analysis  (Fri Jun 13 2025 1-2:30pm)
-Updated slides:[STworkshop_2025.pdf](https://github.com/user-attachments/files/20731274/STworkshop_2025.pdf)
+## Teaching Materials for 2025 Spatial Transcriptomics seminar to NIDDK TriLab Bioinformatics Group (Fri Jun 13 2025 1-2:30pm)
+Updated slides: [STworkshop_2025.pdf](https://github.com/user-attachments/files/20731274/STworkshop_2025.pdf)
 
 ## Teaching Materials for 2024 Spatial Transcriptomics workshop  
 Prepared by Margaret Ho (NIAID BCBB Science Support)  
